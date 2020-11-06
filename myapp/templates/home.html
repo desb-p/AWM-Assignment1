@@ -6,160 +6,20 @@
 {% load crispy_forms_tags %}
 {% load crispy_forms_filters %}
 
-{% block title %}Home{% endblock %}
+{% block head_title %} {%trans "Home Page" %}{% endblock %}
 
-{% block content %}
+{% block body_content %} 
 
-      
-         <div class="topnav">
-            <a class="active" href="{% url 'logout' %}">Home</a>
-            <a href="{% url 'login' %}"> Log In </a>
-        </div>
+    <h3> {% trans "AWM Assignment 1" %} </h3>
+        {% if user.is_authenticated %}
+            Hi {{ user.first_name }} !
+    		<p><a href="{% url 'logout' %}">Log Out</a></p>
+        {% else %}
+            <p>You are not logged in</p>
+             <a href="{% url 'login' %}"> Log In </a>
 
-{% if user.is_authenticated %}
-    Hi {{ user.username }}!<br>
-        
-        
-        
-        <style>
-
-        .leaflet-container {  /* all maps */
-            width:  600px;
-            height: 500px;
-
-        }
-
-        /* Resize the "display_raw" textbox */
-        .django-leaflet-raw-textarea {
-            width: 100%;
-        }
-
-        </style>
-          
-        <head>
-            {% leaflet_js %}
-            {% leaflet_css %}
-
-
-
-        </head>
-       
-       
-          
-        <script>
-            var HOST = location.protocol + "//" + location.host;
-            var locationMarker;
-            var circle;
-            $("#map").css({
-                "width": "100%",
-                "height": $(document).height() - ($("#header").height() + $("#footer").height() + 45)
-            })
-
-            function map_init_basic(map, options) {
-                var pos;
-                map.setView([53.5, -8.5], 11)
-                updateLocation(map);
-                map.on('touchstart click dblclick ', function () {
-                    updateLocation(map);
-                });
-            }
-
-            // The function updateLocation takes our map object, figures out our location and
-            // passes the map object and location data to a further function (setMapToCurrentLocation)
-            function updateLocation(map) {
-                navigator.geolocation.getCurrentPosition(
-                    function (pos) {
-                        setMapToCurrentLocation(map, pos);
-                        update_db(pos);
-                    },
-                    function (err) {
-                    },
-                    {
-                        enableHighAccuracy: true,
-                        timeout: 30000
-                    }
-                );
-            }
-
-            // Create a LatLng object with your current location
-            // Note: Anything starting with L.xxx is a leaflet object
-            // Sets the map to centre to your location
-            function setMapToCurrentLocation(map, pos) {
-                console.log("In setMapToCurrentLocation.");
-                var myLatLon = L.latLng(pos.coords.latitude, pos.coords.longitude);
-                map.flyTo(myLatLon, 16);
-
-                // Adds a marker showing your location and a circle
-                if (locationMarker) {
-                    map.removeLayer(locationMarker);
-                }
-
-                locationMarker = L.marker(myLatLon).addTo(map);
-
-                if (circle) {
-                    map.removeLayer(circle);
-                }
-
-                // Circle properties
-                circle = L.circle(myLatLon, {
-                    color: 'blue',
-                    fillColor: 'blue',
-                    fillOpacity: 0.2,
-                    radius: pos.coords.accuracy
-                }).addTo(map);
-            }
-
-            function update_db(pos) {
-                var locString = pos.coords.longitude + ", " + pos.coords.latitude;
-                $.ajax({
-                    type: "POST",
-                    headers: {
-                        'X-CSRFToken': getCookie('csrftoken')
-                    },
-                    url: HOST + "/updatedb/",
-                    data: {
-                        point: locString
-                    }
-                }).done(function (data, status, xhr) {
-                    console.log(data["message"])
-                    var originalMsg = $(".toast-body").html();
-                    $(".toast-body").html(originalMsg + "<br/>Updated database<br/>" + data["message"]);
-                    }).fail(function (xhr, status, error) {
-                        console.log(error);
-                        var originalMsg = $(".toast-body").html();
-                        $(".toast-body").html(originalMsg + "<br/>" + error);
-                    }).always(function () {
-                        console.log("find_loc_ed finished");
-                        $(".toast").toast('show');
-                    });
-            }
-        </script>
-
-        <!-- <p><a href="{% url 'logout' %}">Log Out</a></p> -->
-       <!--   <div class="topnav"> -->
-        <!--  <a class="active" href="{% url 'home' %}">Home</a> -->
-        <a href="{% url 'logout' %}"> Logout </a>
-        </div>
-        
-        {#    <h3>{% trans "Map" %}</h3>#}
-
-        {% leaflet_map "map" callback="window.map_init_basic" %}    
-
-    </div>
-
-<body> 
-
-
-
-</body>
-              
-{% else %}
-      <p>You are not logged in</p>
-        
-
-
-        
-{% endif %}
+        {% endif %}
 {% endblock %}
 
-  
+
+
