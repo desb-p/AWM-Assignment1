@@ -1,22 +1,22 @@
-<!-- {% extends 'base.html' %}
+{% extends 'base.html' %}
 {% load leaflet_tags %}
 {% load static %}
 {% load i18n %}
 {% load crispy_forms_tags %}
 {% load crispy_forms_filters %}
 
-{% load crispy_forms_filters %} -->
+{% load crispy_forms_filters %}
 
-<!-- {% block head_title %} {%trans "Map Page" %}{% endblock %}
+{% block head_title %} {%trans "Map Page" %}{% endblock %}
 
 {% block extra_header %} 
 	 {% leaflet_css %}
-  	 {% leaflet_js %} -->
+  	 {% leaflet_js %}
  	<style>
             /* all maps */
-        	/*.#map {  
+        	.#map {  
             width:  100vw;
-            height: 100vh;*/
+            height: 100vh;
 
         }
 
@@ -28,124 +28,124 @@
  {% block body_content %}  -->
 
  		<!-- get the map to show up -->
-   <!--  {% leaflet_map "map" callback="window.map_init_basic" %}    
+    {% leaflet_map "map" callback="window.map_init_basic" %}    
 
 {% endblock %}
 
- {% block extra_footer %} -->
+ {% block extra_footer %}
  	<script>
- 		// var HOST = location.protocol + "//" + location.host;
-   //      var locationMarker;
-   //      var circle;
+ 		var HOST = location.protocol + "//" + location.host;
+        var locationMarker;
+        var circle;
 
-   //      $("#map").css({
-   //          "width": "100%",
-   //          "height": $(document).height() - ($("#header").height() + $("#footer").height() + 45)
-   //      })
+        $("#map").css({
+            "width": "100%",
+            "height": $(document).height() - ($("#header").height() + $("#footer").height() + 45)
+        })
 
         // sets up the map
-                // function map_init_basic(map, options) {
-                // 	var pos;
-                // 	map.setView([53.5, -8.5], 11)
-                // 	updateLocation(map);
-               	//  map.on('touchstart click dblclick ', function () {
-                // 	updateLocation(map);
-                // 	});
-                // }
+        function map_init_basic(map, options) {
+        	var pos;
+        	map.setView([53.5, -8.5], 11)
+        	updateLocation(map);
+       	 map.on('touchstart click dblclick ', function () {
+        	updateLocation(map);
+        	});
+        }
 
-            // // The function updateLocation takes our map object, figures out our location and
-            // // passes the map object and location data to a further function (setMapToCurrentLocation)
-            // function updateLocation(map) {
-            //     navigator.geolocation.getCurrentPosition(
-            //         function (pos) {
-            //             setMapToCurrentLocation(map, pos);
-            //             update_db(pos);
-            //         },
-            //         function (err) {
-            //         },
-            //         {
-            //             enableHighAccuracy: true,
-            //             timeout: 30000
-            //         }
-            //     );
-            // }
+            // The function updateLocation takes our map object, figures out our location and
+            // passes the map object and location data to a further function (setMapToCurrentLocation)
+            function updateLocation(map) {
+                navigator.geolocation.getCurrentPosition(
+                    function (pos) {
+                        setMapToCurrentLocation(map, pos);
+                        update_db(pos);
+                    },
+                    function (err) {
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 30000
+                    }
+                );
+            }
 
             // Create a LatLng object with your current location
             // Note: Anything starting with L.xxx is a leaflet object
             // Sets the map to centre to your location
-            // function setMapToCurrentLocation(map, pos) {
-            //     console.log("In setMapToCurrentLocation.");
-            //     var myLatLon = L.latLng(pos.coords.latitude, pos.coords.longitude);
-            //     map.flyTo(myLatLon, 16);
+            function setMapToCurrentLocation(map, pos) {
+                console.log("In setMapToCurrentLocation.");
+                var myLatLon = L.latLng(pos.coords.latitude, pos.coords.longitude);
+                map.flyTo(myLatLon, 16);
 
                 // Adds a marker showing your location and a circle
-                // if (locationMarker) {
-                //     map.removeLayer(locationMarker);
-                // }
+                if (locationMarker) {
+                    map.removeLayer(locationMarker);
+                }
 
-                // locationMarker = L.marker(myLatLon).addTo(map);
+                locationMarker = L.marker(myLatLon).addTo(map);
 
-                // if (circle) {
-                //     map.removeLayer(circle);
-                // }
+                if (circle) {
+                    map.removeLayer(circle);
+                }
 
                 // Circle properties
-                // circle = L.circle(myLatLon, {
-                //     color: 'blue',
-                //     fillColor: 'blue',
-                //     fillOpacity: 0.2,
-                //     radius: pos.coords.accuracy
-                // }).addTo(map);
+                circle = L.circle(myLatLon, {
+                    color: 'blue',
+                    fillColor: 'blue',
+                    fillOpacity: 0.2,
+                    radius: pos.coords.accuracy
+                }).addTo(map);
 
-                // SHows the toast message in the box.
-           //      $(".toast-body").html("Found location<br>Lat: " + myLatLon.lat + "Lon: " + myLatLon.lng);
-           //      $(".toast").toast('show');
+                SHows the toast message in the box.
+                $(".toast-body").html("Found location<br>Lat: " + myLatLon.lat + "Lon: " + myLatLon.lng);
+                $(".toast").toast('show');
 
-           //  }
+            }
 
-           //  function update_db(pos) {
-           //      var locString = pos.coords.longitude + ", " + pos.coords.latitude;
+            function update_db(pos) {
+                var locString = pos.coords.longitude + ", " + pos.coords.latitude;
 
-           //      $.ajax({
-           //          type: "POST",
-           //          headers: {
-           //              'X-CSRFToken': getCookie('csrftoken')
-           //          },
-           //          url: HOST + "/updatedb/",
-           //          data: {
-           //              point: locString
-           //          }
-           //      }).done(function (data, status, xhr) {
-           //          console.log(data["message"])
-           //          var originalMsg = $(".toast-body").html();
-           //          $(".toast-body").html(originalMsg + "<br/>Updated database<br/>" + data["message"]);
-           //          }).fail(function (xhr, status, error) {
-           //              console.log(error);
-           //              var originalMsg = $(".toast-body").html();
-           //              $(".toast-body").html(originalMsg + "<br/>" + error);
-           //          }).always(function () {
-           //              console.log("find_loc_ed finished");
-           //              $(".toast").toast('show');
-           //          });
-           // }
+                $.ajax({
+                    type: "POST",
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    url: HOST + "/updatedb/",
+                    data: {
+                        point: locString
+                    }
+                }).done(function (data, status, xhr) {
+                    console.log(data["message"])
+                    var originalMsg = $(".toast-body").html();
+                    $(".toast-body").html(originalMsg + "<br/>Updated database<br/>" + data["message"]);
+                    }).fail(function (xhr, status, error) {
+                        console.log(error);
+                        var originalMsg = $(".toast-body").html();
+                        $(".toast-body").html(originalMsg + "<br/>" + error);
+                    }).always(function () {
+                        console.log("find_loc_ed finished");
+                        $(".toast").toast('show');
+                    });
+           }
 
-  //          function getCookie(name) {
-  //          		var cookieValue = null;
-  //          		if(document.cookie && document.cookie !== '') {
-  //          			var cookies = document.cookie.get.split(';');
-  //          			for ( var i = 0; i < cookies.length; i++) {
-  //          				var cookie = jQuery.trim(cookies[i]);
-  //          				//Does this cookie string begin with the name we want? 
-  //          				if(cookie.substring(0, name.length + 1) == (name + '=')) {
-  //          					cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-  //          					break;
-  //          				}
-  //          			}
-  //          		}
-  //          }
-
-
+           function getCookie(name) {
+           		var cookieValue = null;
+           		if(document.cookie && document.cookie !== '') {
+           			var cookies = document.cookie.get.split(';');
+           			for ( var i = 0; i < cookies.length; i++) {
+           				var cookie = jQuery.trim(cookies[i]);
+           				//Does this cookie string begin with the name we want? 
+           				if(cookie.substring(0, name.length + 1) == (name + '=')) {
+           					cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+           					break;
+           				}
+           			}
+           		}
+           }
 
 
 
- 	// </script> 
+
+
+ 	</script> 

@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'myapp',
     'crispy_forms',  # improves the front end
     'leaflet',
+    'accounts', #new
 ]
 
 MIDDLEWARE = [
@@ -143,6 +144,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 #Login redirect
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
+
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH = str(BASE_DIR.joinpath('sent_emails'))
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 CRISPY_FAIL_SILENTLY = not DEBUG
