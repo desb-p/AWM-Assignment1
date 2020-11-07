@@ -1,23 +1,22 @@
 {% extends 'base.html' %}
+
 {% load leaflet_tags %}
 {% load static %}
 {% load i18n %}
 {% load crispy_forms_tags %}
 {% load crispy_forms_filters %}
 
-{% load crispy_forms_filters %}
-
 {% block head_title %} {%trans "Map Page" %}{% endblock %}
 
 {% block extra_header %} 
-	 {% leaflet_css %}
-  	 {% leaflet_js %}
+     {% leaflet_css %}
+     {% leaflet_js %}
+	
  	<style>
             /* all maps */
         	.#map {  
             width:  100vw;
             height: 100vh;
-
         }
 
     </style>
@@ -27,37 +26,37 @@
 
  {% block body_content %}  
 
- 	
     {% leaflet_map "map" callback="window.map_init_basic" %}    
 
 {% endblock %}
 
- {% block extra_footer %} {% endblock %}
- 	<script>
- 		var HOST = location.protocol + "//" + location.host;
-        var locationMarker;
-        var circle;
+ {% block extra_footer %} 
+ 	  <script>
+     		var HOST = location.protocol + "//" + location.host;
+            var locationMarker;
+            var circle;
 
-        $("#map").css({
-            "width": "100%",
-            "height": $(document).height() - ($("#header").height() + $("#footer").height() + 45)
-        })
+            $("#map").css({
+                "width": "100%",
+                "height": $(document).height() - ($("#header").height() + $("#footer").height() + 45)
+            });
 
-        // sets up the map
-        function map_init_basic(map, options) {
-        	var pos;
-        	map.setView([53.5, -8.5], 11)
-        	updateLocation(map);
-       	 map.on('touchstart click dblclick ', function () {
-        	updateLocation(map);
-        	});
-        }
+            // sets up the map
+            function map_init_basic(map, options) {
+            	var pos;
+            	map.setView( [53.5, -8.5], 11)
+            	updateLocation(map);
+           	    map.on('touchstart click dblclick ', function () {
+            	updateLocation(map);
+            	});
+            }
 
             // The function updateLocation takes our map object, figures out our location and
             // passes the map object and location data to a further function (setMapToCurrentLocation)
             function updateLocation(map) {
                 navigator.geolocation.getCurrentPosition(
                     function (pos) {
+                        console.log(pos);
                         setMapToCurrentLocation(map, pos);
                         update_db(pos);
                     },
@@ -73,7 +72,7 @@
             // Create a LatLng object with your current location
             // Note: Anything starting with L.xxx is a leaflet object
             // Sets the map to centre to your location
-            function setMapToCurrentLocation(map, pos) {
+             function setMapToCurrentLocation(map, pos) {
                 console.log("In setMapToCurrentLocation.");
                 var myLatLon = L.latLng(pos.coords.latitude, pos.coords.longitude);
                 map.flyTo(myLatLon, 16);
@@ -82,7 +81,7 @@
                 if (locationMarker) {
                     map.removeLayer(locationMarker);
                 }
-
+                console.log(myLatLon);
                 locationMarker = L.marker(myLatLon).addTo(map);
 
                 if (circle) {
@@ -93,11 +92,11 @@
                 circle = L.circle(myLatLon, {
                     color: 'blue',
                     fillColor: 'blue',
-                    fillOpacity: 0.2,
+                    fillOpacity: 0.3,
                     radius: pos.coords.accuracy
                 }).addTo(map);
 
-                SHows the toast message in the box.
+               
                 $(".toast-body").html("Found location<br>Lat: " + myLatLon.lat + "Lon: " + myLatLon.lng);
                 $(".toast").toast('show');
 
@@ -142,10 +141,9 @@
            				}
            			}
            		}
+                return cookieValue;
            }
 
-
-
-
-
  	</script> 
+
+{% endblock %}
