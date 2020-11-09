@@ -11,24 +11,36 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
-import os, json, socket, sys, environ
+import os, json, socket, sys
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
+
+# reading .env file
+environ.Env.read_env()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ro%wkdrr%u7dfbm&h$)v37m1mn_*7fmjn%gf_fz*cd&y9s2ql)'
+#SECRET_KEY = 'ro%wkdrr%u7dfbm&h$)v37m1mn_*7fmjn%gf_fz*cd&y9s2ql)'
+SECRET_KEY = env('SECRET_KEY')
 
-
+# with open(os.path.join (BASE_DIR, "secret_key.txt")) as f:
+#     SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+# False if not in os.environ
+DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
 
 # Application definition
@@ -83,18 +95,20 @@ WSGI_APPLICATION = 'ca1.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.contrib.gis.db.backends.postgis',
+#         'NAME': 'gis',
+#         'HOST': 'localhost',
+#         'PORT': '25432',
+#         'USER': 'docker',
+#         'PASSWORD': 'docker',
+#     }
+# }
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'gis',
-        'HOST': 'localhost',
-        'PORT': '25432',
-        'USER': 'docker',
-        'PASSWORD': 'docker',
-    }
+    'default': env.db()
 }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
@@ -163,35 +177,49 @@ LEAFLET_CONFIG = {
     'OPACITY': 0.5,
 }
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+CSRF_COOKIE_SECURE = env("CSRF_COOKIE_SECURE")
+SESSION_COOKIE_SECURE = env("SESSION_COOKIE_SECURE")
+
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # STATIC_ROOT = os.path.join(BASE_DIR, "static")
 # STATIC_URL = "/static/"
 
-env = environ.Env(
-    # set casting, default value
-    DEBUG=(bool, False)
-)
-# reading .env file
-environ.Env.read_env()
+# if socket.gethostname() =="Desirees-MacBook-Pro.local":
+#     DATABASES["default"]["HOST"] = "localhost"
+#     DATABASES["default"]["PORT"] = docker_config.POSTGIS_PORT
+# else:
+#     DATABASES["default"]["HOST"] = f"{docker_config.PROJECT_NAME}-postgis"
+#     DATABASES["default"]["PORT"] = 5432
 
-# False if not in os.environ
-DEBUG = env('DEBUG')
+# # Set DEPLOY_SECURE to True only for LIVE deployment
+# if docker_config.DEPLOY_SECURE:
+#     DEBUG = False
+#     TEMPLATES[0]["OPTIONS"]["debug"] = False
+#     ALLOWED_HOSTS = ['.myappp.xyz', 'localhost',]
+#     CSRF_COOKIE_SECURE = True
+#     SESSION_COOKIE_SECURE = True
+# else:
+#     DEBUG = True
+#     TEMPLATES[0]["OPTIONS"]["debug"] = True
+#     ALLOWED_HOSTS = ['*', ]
+#     CSRF_COOKIE_SECURE = False
+#     SESSION_COOKIE_SECURE = False
 
-# Raises django's ImproperlyConfigured exception if SECRET_KEY not in os.environ
-SECRET_KEY = env('SECRET_KEY')
 
-# Parse database connection url strings like psql://user:pass@127.0.0.1:8458/db
-DATABASES = {
-    # read os.environ['DATABASE_URL'] and raises ImproperlyConfigured exception if not found
-    'default': env.db(),
-    # read os.environ['SQLITE_URL']
-    'extra': env.db('SQLITE_URL', default='sqlite:////tmp/my-tmp-sqlite.db')
-}
 
-CACHES = {
-    # read os.environ['CACHE_URL'] and raises ImproperlyConfigured exception if not found
-    'default': env.cache(),
-    # read os.environ['REDIS_URL']
-    'redis': env.cache('REDIS_URL')
-}
+
+# DATABASES = {
+#     # read os.environ['DATABASE_URL'] and raises ImproperlyConfigured exception if not found
+#     'default': env.db(),
+#     # read os.environ['SQLITE_URL']
+#     'extra': env.db('SQLITE_URL', default='sqlite:////tmp/my-tmp-sqlite.db')
+# }
+
+
+# CACHES = {
+#     # read os.environ['CACHE_URL'] and raises ImproperlyConfigured exception if not found
+#     'default': env.cache(),
+#     # read os.environ['REDIS_URL']
+#     'redis': env.cache('REDIS_URL')
+# }
 
