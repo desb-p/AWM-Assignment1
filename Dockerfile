@@ -3,9 +3,9 @@
 ##
 
 # Start from an existing image with Python 3.8 installed
-FROM python:3.8
+FROM python:3.9
 
-MAINTAINER Mark Foley
+MAINTAINER Desiree Pepito
 
 # Run a series of Linux commands to ensure that
 # 1. Everything is up-to-date and
@@ -31,7 +31,7 @@ RUN pip install -r requirements.txt
 COPY . /usr/src/app
 
 # Make sure that static files are up to date and available
-RUN python manage.py collectstatic --no-input
+#RUN python manage.py collectstatic --no-input
 
 # Expose port 8001 on the image. We'll map a localhost port to this later.
 EXPOSE 8001
