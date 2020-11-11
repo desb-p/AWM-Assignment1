@@ -21,11 +21,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
-env = environ.Env()
+env = environ.Env(
+    DEBUG=(bool, False),
+    CSRF_COOKIE_SECURE = (bool, True),
+    SESSION_COOKIE_SECURE = (bool, True),
+)
 
 # reading .env file
 environ.Env.read_env()
-
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = os.environ['SECRET_KEY']
@@ -33,9 +36,7 @@ environ.Env.read_env()
 # Raises django's ImproperlyConfigured exception if SECRET_KEY not in os.environ
 SECRET_KEY = env('SECRET_KEY')
 
-
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
 # False if not in os.environ
 DEBUG = env('DEBUG')
 
